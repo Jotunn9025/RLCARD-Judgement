@@ -1,5 +1,4 @@
 from typing import List
-import numpy as np
 from .card import JudgementCard
 from .player import JudgementPlayer
 import secrets

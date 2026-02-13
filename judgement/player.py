@@ -36,7 +36,7 @@ class JudgementPlayer:
         return f"Player {self.player_id}"
     
     def __repr__(self)->str:
-        return f"JudgementPlater({self.player_id})"
+        return f"JudgementPlayer({self.player_id})"
     
     def __eq__(self,other)->bool:
         if isinstance(other,JudgementPlayer):
