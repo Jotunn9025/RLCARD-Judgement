@@ -173,11 +173,18 @@ The NFSP algorithm may require significant computational resources and episodes 
 
 **Mitigation**: Implement agent-vs-agent tournament evaluation to better assess learning progress.
 
-### 3. **Observation Space Complexity**
+## Testing
 
-The 227-feature observation vector is dense and somewhat redundant, potentially slowing convergence.
+The project includes a thorough test suite located in the `pytests/` directory. These tests cover:
+- **Game Structure**: Initialization, flow, bidding constraints, and trick resolution.
+- **History Tracking**: Verification of the 227-feature observation bits and `played_cards_history`.
+- **NFSP Agent**: Initializations, policy consistency, and self-play integration.
+- **Step Back**: Recursive state restoration for MCTS/ISMCTS support.
 
-**Mitigation**: Consider dimensionality reduction or attention mechanisms for more efficient feature extraction.
+### Run All Tests
+```bash
+uv run pytest pytests/
+```
 
 ---
 

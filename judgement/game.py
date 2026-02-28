@@ -380,3 +380,24 @@ class JudgementGame:
             self.starting_set_cards=config['starting_set_cards']
             self.current_set_start=config['starting_set_cards']
             self.num_cards=config['starting_set_cards']
+   # Stuff the tests might require
+    def is_round_over(self) -> bool:
+        if self.phase == 'bidding':
+            return False
+        return self.trick_number > self.num_cards
+    
+    def is_over(self) -> bool:
+        return self._game_over
+    
+    def get_num_players(self) -> int:
+        return self.NUM_PLAYERS
+    
+    @staticmethod
+    def get_num_actions() -> int:
+        return JudgementGame.NUM_ACTIONS
+    
+    def get_player_id(self) -> int:
+        return self.current_player_id
+    
+    def get_payoffs(self) -> List[float]:
+        return self.cumulative_scores.copy()

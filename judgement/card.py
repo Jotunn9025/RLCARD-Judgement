@@ -1,4 +1,4 @@
-class JudgmentCard:
+class JudgementCard:
     """Each and every card in the game is represented as an instance of this class.
     """
     SUITS=['S','D','H','C']
@@ -18,7 +18,7 @@ class JudgmentCard:
         return self.RANKS.index(self.rank)
     
     @classmethod
-    def make_from_index(cls,index:int)-> "JudgmentCard":
+    def make_from_index(cls,index:int)-> "JudgementCard":
         """Creates a card from its index value"""
         return cls(cls.SUITS[index//13],cls.RANKS[index%13])
     
@@ -29,7 +29,7 @@ class JudgmentCard:
         return f"JudgementCard({self.suit}, {self.rank})"
     
     def __eq__(self,other)->bool:
-        if isinstance(other,JudgmentCard):
+        if isinstance(other,JudgementCard):
             return self.suit==other.suit and self.rank==other.rank
         return False
     
