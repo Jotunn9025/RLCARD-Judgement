@@ -34,14 +34,15 @@ class JudgementEnv(Env):
         self.name='Judgement'
         self.game = JudgementGame(allow_step_back=config.get('allow_step_back', True))
         self.game.configure(config)
+        self.NUM_PLAYERS = self.game.NUM_PLAYERS
         if 'seed' not in config:
             config['seed']=None
         if 'allow_step_back' not in config:
             config['allow_step_back']=True
         super().__init__(config)
 
-        self.state_shape = [[227] for _ in range(self.num_players)]
-        self.action_shape = [None for _ in range(self.num_players)]
+        self.state_shape = [[227] for _ in range(self.NUM_PLAYERS)]
+        self.action_shape = [None for _ in range(self.NUM_PLAYERS)]
 
     def _extract_state(self, state:Dict)->Dict:
         """
@@ -55,7 +56,7 @@ class JudgementEnv(Env):
             hand_rep[card.get_index()]=1
         obs_parts.append(hand_rep)
         #trump suit representation
-        trump_rep = np.zeros(4, dtype=np.float32)
+        trump_rep = np.zeros(self.NUM_PLAYERS, dtype=np.float32)
         trump_idx = JudgementCard.SUITS.index(state['trump_suit'])
         trump_rep[trump_idx] = 1
         obs_parts.append(trump_rep)
@@ -66,7 +67,7 @@ class JudgementEnv(Env):
         obs_parts.append(trick_rep)
         #bdis
         max_cards = 13
-        bids_rep = np.zeros(4, dtype=np.float32)
+        bids_rep = np.zeros(self.NUM_PLAYERS, dtype=np.float32)
         for i, bid in enumerate(state['bids']):
             if bid is not None:
                 bids_rep[i] = bid / max_cards
@@ -75,7 +76,7 @@ class JudgementEnv(Env):
         tricks_rep = np.array(state['tricks_won'], dtype=np.float32) / max_cards
         obs_parts.append(tricks_rep)
         #DEALER POS
-        dealer_rep = np.zeros(4, dtype=np.float32)
+        dealer_rep = np.zeros(self.NUM_PLAYERS, dtype=np.float32)
         dealer_rep[state['dealer_id']] = 1
         obs_parts.append(dealer_rep)
         #phase indicatior
@@ -94,7 +95,7 @@ class JudgementEnv(Env):
             for i, trick in enumerate(state['played_cards_history']):
                 if i < 13:
                     winner_id = trick['winner_id']
-                    winners_rep[i * 4 + winner_id] = 1
+                    winners_rep[i * self.NUM_PLAYERS + winner_id] = 1
         obs_parts.append(winners_rep)
         #played cards
         played_cards_rep = np.zeros(52, dtype=np.float32)
@@ -145,5 +146,5 @@ class JudgementEnv(Env):
             'bids': self.game.bids.copy(),
             'tricks_won': self.game.tricks_won.copy(),
             'current_trick': [(pid, str(c)) for pid, c in self.game.current_trick],
-            'hands': [[str(c) for c in self.game.players[i].hand] for i in range(4)]
+            'hands': [[str(c) for c in self.game.players[i].hand] for i in range(self.NUM_PLAYERS)]
         }
