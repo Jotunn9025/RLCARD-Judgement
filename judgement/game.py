@@ -66,6 +66,9 @@ class JudgementGame:
         #History for tree search. storing hi
         self.history:List[Dict]=[]
         
+        # History of completed tricks for observation
+        self.played_cards_history: List[Dict] = []
+        
     def init_game(self)->Tuple[ Dict,int]:
         """
         Starts a game and resets everything
@@ -109,6 +112,7 @@ class JudgementGame:
         self.current_trick=[]
         self.lead_suit=None
         self.trick_number=0
+        self.played_cards_history = []
 
         state=self.get_state(self.current_player_id)
         return state,self.current_player_id
@@ -157,6 +161,7 @@ class JudgementGame:
                 }
                 for p in self.players
             ],
+            'played_cards_history': copy.deepcopy(self.played_cards_history),
         }
     def _restore(self,snapshot:Dict):
         """Restore game state using snapshot"""
@@ -181,6 +186,7 @@ class JudgementGame:
             self.players[i].bid = p_snap['bid']
             self.players[i].tricks_won = p_snap['tricks_won']
         self.hands = [p.hand for p in self.players]
+        self.played_cards_history = snapshot.get('played_cards_history', [])
 
     def step_back(self)->bool:
         """
@@ -232,6 +238,13 @@ class JudgementGame:
         winner_id=self._determine_winner()
         self.tricks_won[winner_id]+=1
         self.players[winner_id].tricks_won+=1
+        
+        # Record completed trick
+        self.played_cards_history.append({
+            'winner_id': winner_id,
+            'cards': self.current_trick.copy()
+        })
+        
         self.current_trick=[]
         self.lead_suit=None
         self.trick_number+=1
@@ -282,6 +295,7 @@ class JudgementGame:
             'lead_suit': self.lead_suit,
             'dealer_id': self.dealer_id,
             'num_cards': self.num_cards,
+            'played_cards_history': self.played_cards_history.copy(),
             'legal_actions': self.get_legal_actions(player_id)
         }
     
