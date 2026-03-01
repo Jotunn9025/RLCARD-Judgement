@@ -62,7 +62,7 @@ def train(args):
             # Evaluate Agent 0 against 3 Random Agents
             eval_env.set_agents([agents[0], random_agent, random_agent, random_agent])
             rewards = tournament(eval_env, args.evaluate_num)
-                        rl_loss = getattr(agents[0], 'rl_loss', 0)
+            rl_loss = getattr(agents[0], 'rl_loss', 0)
             sl_loss = getattr(agents[0], 'sl_loss', 0)
             
             print(f"Episode: {episode}")
